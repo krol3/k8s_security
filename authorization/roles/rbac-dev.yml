@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+rules:
+  - apiGroups: [""] # "" indicates the core API group
+    resources: ["pods"]
+    verbs: ["get", "watch", "list", "create", "update", "delete"]
+
+  - apiGroups: [""]
+    resources: ["ConfigMap"]
+    verbs: ["create"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: developer-binding
+  namespace: my_ns
+subjects:
+  - kind: User
+    name: dev-user
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: developer
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,22 @@
+
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/kubernetes/kubernetes
+
+[Service]
+ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
+ExecStart=/usr/bin/kubelet \
+  --config=/etc/kubernetes/kubelet-config.yaml \
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \
+  --kubeconfig=/var/lib/kubelet/kubeconfig \
+  
+  --network-plugin=cni \
+  --cni-bin-dir=/opt/cni/bin \
+  --cni-conf-dir=/etc/cni/net.d \
+
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

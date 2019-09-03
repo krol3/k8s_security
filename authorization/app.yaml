@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  annotations:
+    seccomp.security.alpha.kubernetes.io/pod: runtime/default
+    container.apparmor.security.beta.kubernetes.io/hello: runtime/default
+spec:
+  securityContext:
+    runAsUser: 1000
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    seLinuxOptions:
+      level: "s0:c123,c456"
+
+  replicas: 1
+
+  selector:
+    matchLabels:
+      deploy: example
+
+  template:
+    metadata:
+      labels:
+        deploy: example
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.7.9
+          securityContext:
+            runAsUser: 1000
+            capabilities:
+              add: ["MAC_ADMIN"]
